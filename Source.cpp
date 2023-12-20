@@ -77,6 +77,10 @@ void playerTurn(Character& player, Character& enemy) {
     case 4:
         player.health = player.health + 30;
         cout << "Player Heals!";
+        if (player.health > 100)
+        {
+            player.health = 100;
+        }
         cout << "PLAYER HP: " << player.health;
         break;
     case 5:
