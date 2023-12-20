@@ -116,23 +116,29 @@ void battle(Character& player, Character& enemy) {
         // Player's turn
         playerTurn(player, enemy);
 
+        // Display HP bars
+        std::cout << "Player HP: " << player.health << " / 100\t";
+        std::cout << "Enemy HP: " << enemy.health << " / 80" << std::endl;
+
         if (!enemy.isAlive()) {
             std::cout << enemy.name << " has been defeated!" << std::endl;
             break;
         }
 
         if (run == 1) {
-            cout << player.name << " has escpaed!" << endl;
+            cout << player.name << " has escaped!" << endl;
             break;
         }
         if (run == 0) {
-            cout << player.name << " hasn't escaped!";
-        }
-        if (run > 1) {
+            cout << player.name << " hasn't escaped!" << endl;
         }
 
         // Enemy's turn
         enemyTurn(player, enemy);
+
+        // Display HP bars
+        std::cout << "Player HP: " << player.health << " / 100\t";
+        std::cout << "Enemy HP: " << enemy.health << " / 80" << std::endl;
 
         if (!player.isAlive()) {
             std::cout << player.name << " has been defeated!" << std::endl;
@@ -142,6 +148,7 @@ void battle(Character& player, Character& enemy) {
 
     std::cout << "Battle End!" << std::endl;
 }
+
 
 int main() {
     std::srand(std::time(0));
