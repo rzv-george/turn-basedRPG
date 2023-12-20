@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
+#include <thread>  // for std::this_thread::sleep_for
 
 bool PlayerBlock;
 int run = 10;
@@ -31,7 +32,16 @@ public:
     int dealDamage() const {
         return rand() % (attack / 2) + (attack / 2);
     }
+
+    int dealHeal() const {
+        return rand() % (attack / 2) + (attack / 2);
+    }
 };
+
+void displayHPBars(Character& player, Character& enemy) {
+    std::cout << "Player HP: " << player.health << " / 100\t";
+    std::cout << "Enemy HP: " << enemy.health << " / 80" << std::endl;
+}
 
 void displayMenu() {
     std::cout << "1. Attack\n";
@@ -74,7 +84,7 @@ void playerTurn(Character& player, Character& enemy) {
             run = 0;
         }
         break;
-    case 4:
+    case 4: {
         player.health = player.health + 30;
         cout << "Player Heals!";
         if (player.health > 100)
@@ -83,15 +93,12 @@ void playerTurn(Character& player, Character& enemy) {
         }
         cout << "PLAYER HP: " << player.health;
         break;
-    case 5:
-        cout << player.health << " " << enemy.health;
-        break;
+    }
     default:
         std::cout << "Invalid choice. Try again." << std::endl;
         playerTurn(player, enemy);
     }
 }
-
 
 void enemyTurn(Character& player, Character& enemy) {
     // Simple enemy AI: always attack
@@ -113,12 +120,14 @@ void battle(Character& player, Character& enemy) {
     std::cout << "Battle Start! " << player.name << " vs " << enemy.name << std::endl;
 
     while (player.isAlive() && enemy.isAlive()) {
+        // Display updated information
+        displayHPBars(player, enemy);
+
         // Player's turn
         playerTurn(player, enemy);
 
-        // Display HP bars
-        std::cout << "Player HP: " << player.health << " / 100\t";
-        std::cout << "Enemy HP: " << enemy.health << " / 80" << std::endl;
+        // Wait for 2 seconds
+        std::this_thread::sleep_for(std::chrono::seconds(2));
 
         if (!enemy.isAlive()) {
             std::cout << enemy.name << " has been defeated!" << std::endl;
@@ -136,25 +145,30 @@ void battle(Character& player, Character& enemy) {
         // Enemy's turn
         enemyTurn(player, enemy);
 
-        // Display HP bars
-        std::cout << "Player HP: " << player.health << " / 100\t";
-        std::cout << "Enemy HP: " << enemy.health << " / 80" << std::endl;
+        // Display updated information
+        displayHPBars(player, enemy);
+
+        
 
         if (!player.isAlive()) {
             std::cout << player.name << " has been defeated!" << std::endl;
             break;
         }
+        // Wait for 2 seconds
+        std::this_thread::sleep_for(std::chrono::seconds(2));
+
+        // Clear the console
+        system("CLS");
     }
 
     std::cout << "Battle End!" << std::endl;
 }
 
-
 int main() {
     std::srand(std::time(0));
 
-    Character player("Player", 100, 10, 39, 30);
-    Character enemy("Enemy", 80, 30, 10, 10);
+    Character player("Player", 100, 20, 39, 30);
+    Character enemy("Enemy", 80, 10, 10, 10);
 
     battle(player, enemy);
 
